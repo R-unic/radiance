@@ -21,7 +21,6 @@ class Parser
       when Syntax::EOF
         break
       else
-        puts token
         logger.report_error("Unexpected token", token.syntax_type, token.position, token.line)
       end
       @position += 1
