@@ -16,8 +16,19 @@ class Parser
     nodes = []
     while token = @tokens[@position]
       case token.syntax_type
-      when Syntax::Float, Syntax::String, Syntax::None, Syntax::Identifier, Syntax::LeftParen
+      when
+      Syntax::Float,
+      Syntax::String,
+      Syntax::Boolean,
+      Syntax::None,
+      Syntax::Identifier,
+      Syntax::LeftParen
         nodes.push(parse_expression)
+      when
+      Syntax::Plus,
+      Syntax::Minus,
+      Syntax::Bang
+        nodes.push(parse_primary_expression)
       when Syntax::EOF
         break
       else
@@ -49,6 +60,7 @@ class Parser
       Syntax::PercentEqual,
       Syntax::Equal,
       Syntax::EqualEqual,
+      Syntax::BangEqual,
       Syntax::Less,
       Syntax::Greater,
       Syntax::Ampersand,
@@ -57,7 +69,7 @@ class Parser
       Syntax::HyphenArrow,
         advance
         advance
-        left = BinaryNode.new(left, token, parse_primary_expression)
+        left = BinaryOpNode.new(left, token, parse_primary_expression)
       when Syntax::EOF
         break
       else
@@ -72,16 +84,21 @@ class Parser
   def parse_primary_expression
     token = @tokens[@position]
     case token.syntax_type
-    when Syntax::Float, Syntax::String, Syntax::None, Syntax::Identifier
+    when Syntax::Float, Syntax::String, Syntax::Boolean, Syntax::None, Syntax::Identifier
       advance
       LiteralNode.new(token)
+    when
+    Syntax::Plus,
+    Syntax::Minus,
+    Syntax::Bang
+      advance
+      UnaryOpNode.new(token, parse_primary_expression)
     when Syntax::LeftParen
       advance
       node = parse_expression
       consume(Syntax::RightParen, "Expected ')'")
       node
     when Syntax::EOF
-      break
     else
       logger.report_error("Invalid syntax", token.syntax_type, token.position, token.line)
     end
@@ -99,5 +116,6 @@ class Parser
 
   def advance
     @position += 1
+    @tokens[@position]
   end
 end

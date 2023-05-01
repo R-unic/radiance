@@ -213,14 +213,12 @@ class Lexer
       else
         add_token(Syntax::Colon, nil)
       end
-      advance
     when "+"
       if match_char("=")
         add_token(Syntax::PlusEqual, nil)
       else
         add_token(Syntax::Plus, nil)
       end
-      advance
     when "-"
       if match_char("=")
         add_token(Syntax::MinusEqual, nil)
@@ -229,72 +227,60 @@ class Lexer
       else
         add_token(Syntax::Minus, nil)
       end
-      advance
     when "*"
       if match_char("=")
         add_token(Syntax::StarEqual, nil)
       else
         add_token(Syntax::Star, nil)
       end
-      advance
     when "/"
       if match_char("=")
         add_token(Syntax::SlashEqual, nil)
       else
         add_token(Syntax::Slash, nil)
       end
-      advance
     when "^"
       if match_char("=")
         add_token(Syntax::CaratEqual, nil)
       else
         add_token(Syntax::Carat, nil)
       end
-      advance
     when "%"
       if match_char("=")
         add_token(Syntax::PercentEqual, nil)
       else
         add_token(Syntax::Percent, nil)
       end
-      advance
     when "&"
       add_token(Syntax::Ampersand, nil)
-      advance
     when "|"
       add_token(Syntax::Pipe, nil)
-      advance
     when "?"
       add_token(Syntax::Question, nil)
-      advance
     when "!"
       if match_char("=")
         add_token(Syntax::BangEqual, nil)
       else
         add_token(Syntax::Bang, nil)
       end
-      advance
     when "="
       if match_char("=")
         add_token(Syntax::EqualEqual, nil)
       else
         add_token(Syntax::Equal, nil)
       end
-      advance
     when "<"
       if match_char("=")
         add_token(Syntax::LessEqual, nil)
       else
         add_token(Syntax::Less, nil)
       end
-      advance
     when ">"
       if match_char("=")
         add_token(Syntax::GreaterEqual, nil)
       else
         add_token(Syntax::Greater, nil)
       end
-      advance
     else
       default_char = @source[@position]
       if default_char.match(/\s/)

@@ -13,7 +13,7 @@ class LiteralNode < Node
   end
 end
 
-class BinaryNode < Node
+class BinaryOpNode < Node
   attr_reader :left, :operator, :right
 
   def initialize(left, operator, right)
@@ -25,5 +25,19 @@ class BinaryNode < Node
 
   def to_s
     "Binary<left: #{@left}, operator: #{@operator.syntax_type}, right: #{@right}>"
+  end
+end
+
+class UnaryOpNode < Node
+  attr_reader :operator, :operand
+
+  def initialize(operator, operand)
+    super()
+    @operator = operator
+    @operand = operand
+  end
+
+  def to_s
+    "Unary<operator: #{@operator}, operand: #{@operand}>"
   end
 end
