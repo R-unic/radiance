@@ -10,8 +10,7 @@ class PossibleTokenValue
 
   def to_s
     case @type
-    when Syntax::Boolean
-    when Syntax::Float
+    when Syntax::Float, Syntax::Boolean
       @value.to_s
     when Syntax::String
       "\"#{@value}\""

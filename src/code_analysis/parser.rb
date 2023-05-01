@@ -70,6 +70,8 @@ class Parser
         advance
         advance
         left = BinaryOpNode.new(left, token, parse_primary_expression)
+      when Syntax::RightParen
+        left
       when Syntax::EOF
         break
       else
@@ -96,7 +98,8 @@ class Parser
     when Syntax::LeftParen
       advance
       node = parse_expression
-      consume(Syntax::RightParen, "Expected ')'")
+      @position -= 2
+      consume(Syntax::RightParen, "Expected ')', got")
       node
     when Syntax::EOF
     else

@@ -123,6 +123,7 @@ class Lexer
 
     value = float_from_string(num_str, radix)
     add_token(Syntax::Float, PossibleTokenValue.new(Syntax::Float, value))
+    @position -= 1
   end
 
   def read_string(delim)
