@@ -3,14 +3,15 @@ require_relative "syntax/token"
 require_relative "syntax/keywords"
 
 def float_from_string(s, radix)
-  float_val = s.to_f
-  val = s.to_i(radix) rescue nil
-  if val.nil?
-    float_val
-  else
-    val.to_f
-  end
+  num = s.to_i(radix).to_f
+  return num if s.index('.') == nil
+
+  decimal_places = s.length - s.index('.') - 1
+  decimal_part = s.split('.')[1].to_i(radix).to_f
+  decimal_part /= radix ** decimal_places
+  return num + decimal_part
 end
+
 
 class Lexer
   attr_reader :logger
@@ -111,12 +112,16 @@ class Lexer
       10
     end
 
-    while !finished? && current_char.to_i(radix).to_s == current_char
+    decimal_used = false
+    while !finished? && (current_char.to_i(radix).to_s(radix) == current_char || (!decimal_used && radix == 10 && current_char === "."))
+      if current_char == "."
+        decimal_used = true
+      end
       num_str << advance.to_s
     end
 
     value = float_from_string(num_str, radix)
-    add_token(:float, value: value)
+    add_token(:float, PossibleTokenValue.new(:Float, value))
   end
 
   def read_string(delim)
@@ -167,7 +172,11 @@ class Lexer
     char = current_char
     case char
     when "."
-      add_token(Syntax::Dot, nil)
+      if peek(1).match(/\d/)
+        read_number
+      else
+        add_token(Syntax::Dot, nil)
+      end
     when "{"
       add_token(Syntax::LeftBrace, nil)
     when "}"
@@ -185,7 +194,7 @@ class Lexer
     when ";"
       advance
     when "\n"
-      self.line += 1
+      @line += 1
     when "\""
       read_string(char)
     when "'"
@@ -265,22 +274,22 @@ class Lexer
         add_token(Syntax::Bang, nil)
       end
       advance
-    when '='
-      if match_char('=')
+    when "="
+      if match_char("=")
         add_token(Syntax::EqualEqual, nil)
       else
         add_token(Syntax::Equal, nil)
       end
       advance
-    when '<'
-      if match_char('=')
+    when "<"
+      if match_char("=")
         add_token(Syntax::LessEqual, nil)
       else
         add_token(Syntax::Less, nil)
       end
       advance
-    when '>'
-      if match_char('=')
+    when ">"
+      if match_char("=")
         add_token(Syntax::GreaterEqual, nil)
       else
         add_token(Syntax::Greater, nil)
@@ -295,8 +304,8 @@ class Lexer
 
       is_ident = default_char.match(/[a-zA-Z_$]/)
       is_number = default_char.match(/\d/) ||
-        (default_char == '0' && peek(1) == 'x' && peek(2).match(/[0-9a-fA-F]/)) ||
-        (default_char == '0' && peek(1) == 'b' && peek(2).match(/[01]/))
+        (default_char == "0" && peek(1) == "x" && peek(2).match(/[0-9a-fA-F]/)) ||
+        (default_char == "0" && peek(1) == "b" && peek(2).match(/[01]/))
 
       if is_number
         read_number
