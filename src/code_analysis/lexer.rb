@@ -1,6 +1,7 @@
 require_relative "syntax/syntax"
 require_relative "syntax/token"
 require_relative "syntax/keywords"
+require_relative "../logger"
 
 def float_from_string(s, radix)
   num = s.to_i(radix).to_f

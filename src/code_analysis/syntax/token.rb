@@ -28,9 +28,11 @@ end
 class Token
   attr_reader :syntax_type, :value
 
-  def initialize(syntax_type, value = nil)
+  def initialize(syntax_type, value = nil, position, line)
     @syntax_type = syntax_type
     @value = value
+    @position = position
+    @line = line
   end
 
   def to_s

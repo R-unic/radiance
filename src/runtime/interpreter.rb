@@ -1,8 +1,8 @@
-require_relative "../code_analysis/lexer"
+require_relative "../code_analysis/parser"
 
 class Interpreter
   def interpret(source)
-    lexer = Lexer.new(source)
-    puts lexer.tokenize
+    parser = Parser.new(source)
+    puts parser.parse
   end
 end
