@@ -21,6 +21,7 @@ class Lexer
   def initialize(source)
     @source = source
     @position = 0
+    @char_pos = 0
     @line = 1
     @tokens = []
     @logger = Logger.new
@@ -53,11 +54,12 @@ class Lexer
   def advance
     char = @source[@position]
     @position += 1
+    @char_pos += 1
     char
   end
 
   def add_token(syntax, value)
-    @tokens << Token.new(syntax, value, @position, @line)
+    @tokens << Token.new(syntax, value, @char_pos + 1, @line)
   end
 
   def is_hex?
@@ -197,6 +199,7 @@ class Lexer
       advance
     when "\n"
       @line += 1
+      @char_pos = 0
     when "\""
       read_string(char)
     when "'"
