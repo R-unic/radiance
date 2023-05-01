@@ -6,7 +6,7 @@ class Logger
   end
 
   def report_error(error_type, message, pos, line)
-    puts "[#{line}:#{pos + 1}] #{error_type}: #{message}"
+    $stderr.puts "[#{line}:#{pos + 1}] #{error_type}: #{message}"
     @errored = true
   end
 end
