@@ -7,6 +7,6 @@ class Interpreter
       parser = Parser.new(source)
       puts parser.parse
     end
-    puts "Parsing took #{(time * 1000).round}ms"
+    puts "Done. Took#{(time * 1000).round}ms"
   end
 end

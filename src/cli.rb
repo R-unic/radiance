@@ -7,6 +7,8 @@ def lang_name
 end
 
 class CLI
+  @@interpreter = Interpreter.new
+
   class << self
     def read_file(path)
       File.read(path)
@@ -17,12 +19,10 @@ class CLI
 
     def run_repl
       puts "Welcome to the #{lang_name} REPL"
-
-      interpreter = Interpreter.new
       loop do
         line = Readline.readline("➤ ", true)
         break if line.nil?
-        interpreter.interpret(line)
+        @@interpreter.interpret(line)
       end
     end
 
@@ -41,7 +41,7 @@ class CLI
       else
         path = ARGV[0]
         file_contents = read_file(path)
-        puts file_contents
+        @@interpreter.interpret(file_contents)
       end
     end
   end
