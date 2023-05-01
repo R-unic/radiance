@@ -122,7 +122,7 @@ class Lexer
     end
 
     value = float_from_string(num_str, radix)
-    add_token(:float, PossibleTokenValue.new(:Float, value))
+    add_token(Syntax::Float, PossibleTokenValue.new(Syntax::Float, value))
   end
 
   def read_string(delim)
@@ -131,7 +131,7 @@ class Lexer
     while !finished? && current_char != delim
       res_str << advance.to_s
     end
-    add_token(:string, value: res_str)
+    add_token(Syntax::String, PossibleTokenValue.new(Syntax::String, res_str))
   end
 
   def read_char(delim)
@@ -144,7 +144,7 @@ class Lexer
         break
       end
     end
-    add_token(:char, value: res_str[0])
+    add_token(Syntax::Char, PossibleTokenValue.new(Syntax::Char, res_str[0]))
   end
 
   def read_identifier
@@ -165,7 +165,7 @@ class Lexer
       syntax_type = Keywords.get_type_syntax(ident_str)
       add_token(syntax_type, PossibleTokenValue.new(syntax_type, ident_str))
     else
-      add_token(Syntax::Identifier, PossibleTokenValue.new(:String, ident_str))
+      add_token(Syntax::Identifier, PossibleTokenValue.new(Syntax::String, ident_str))
     end
   end
 

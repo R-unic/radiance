@@ -10,14 +10,14 @@ class PossibleTokenValue
 
   def to_s
     case @type
-    when :Boolean
-    when :Float
+    when Syntax::Boolean
+    when Syntax::Float
       @value.to_s
-    when :String
+    when Syntax::String
       "\"#{@value}\""
-    when :Char
+    when Syntax::Char
       "'#{@value}'"
-    when :None
+    when Syntax::None
       "none"
     else
       @value.to_s
@@ -26,7 +26,7 @@ class PossibleTokenValue
 end
 
 class Token
-  attr_reader :syntax_type, :value
+  attr_reader :syntax_type, :value, :position, :line
 
   def initialize(syntax_type, value = nil, position, line)
     @syntax_type = syntax_type

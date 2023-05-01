@@ -15,18 +15,18 @@ class Parser
   def parse
     nodes = []
     while token = @tokens[@position]
-      node = case token.syntax_type
-      when Syntax::None
-      when Syntax::String
-      when Syntax::Float
-        LiteralNode.new(token)
+      case token.syntax_type
+      when Syntax::Float, Syntax::String, Syntax::None
+        nodes.push(LiteralNode.new(token))
+      when Syntax::EOF
+        break
       else
+        puts token
         logger.report_error("Unexpected token", token.syntax_type, token.position, token.line)
       end
-      nodes.push(node)
+      @position += 1
     end
 
-    @position += 1
     nodes
   end
 end

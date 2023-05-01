@@ -4,7 +4,7 @@ class LiteralNode < Node
   attr_reader :token
 
   def initialize(token)
-    super([])
+    super()
     @token = token
   end
 end
