@@ -1,5 +1,4 @@
 require_relative "logger"
-require_relative "code_analysis/lexer"
+require_relative "cli"
 
-lexer = Lexer.new("const var = 0xf;")
-puts lexer.tokenize
+CLI::run
