@@ -57,5 +57,6 @@ module Syntax
   Break = :Break
   Next = :Next
   Match = :Match
+  Return = :Return
   EOF = :EOF
 end

@@ -3,16 +3,17 @@ class Node; end
 module Expression
   class Expr < Node; end
 
-  class Literal < Expr
-    attr_reader :token
+  class FunctionCall < Expr
+    attr_reader :identifier, :arguments
 
-    def initialize(token)
+    def initialize(identifier, arguments)
       super()
-      @token = token
+      @identifier = identifier
+      @arguments = arguments
     end
 
     def to_s
-      "Literal<syntax: #{@token.syntax_type}, value: #{@token.value}>"
+      "FunctionCall<identifier: #{@identifier} arguments: #{@arguments}>"
     end
   end
 
@@ -44,10 +45,36 @@ module Expression
       "Unary<operator: #{@operator}, operand: #{@operand}>"
     end
   end
+
+  class Literal < Expr
+    attr_reader :token
+
+    def initialize(token)
+      super()
+      @token = token
+    end
+
+    def to_s
+      "Literal<syntax: #{@token.syntax_type}, value: #{@token.value}>"
+    end
+  end
 end
 
 module Statement
   class Stmt < Node; end
+
+  class Return < Stmt
+    attr_reader :expression
+
+    def initialize(expression)
+      super()
+      @expression = expression
+    end
+
+    def to_s
+      "Return<expression: #{@expression}>"
+    end
+  end
 
   class If < Stmt
     attr_reader :condition, :block, :else_branch
@@ -60,7 +87,33 @@ module Statement
     end
 
     def to_s
-      "If<condition: #{@condition},block: #{@block}, else_branch: #{@else_branch}>"
+      "If<condition: #{@condition}, block: #{@block}, else_branch: #{@else_branch}>"
+    end
+  end
+
+  class Expression < Stmt
+    attr_reader :expression
+
+    def initialize(expression)
+      super()
+      @expression = expression
+    end
+
+    def to_s
+      "ExpressionStmt<expression: #{@expression}>"
+    end
+  end
+
+  class Block < Stmt
+    attr_reader :statements
+
+    def initialize(statements)
+      super()
+      @statements = statements
+    end
+
+    def to_s
+      "Block<statements: #{@statements.map { |s| s.to_s }}>"
     end
   end
 end

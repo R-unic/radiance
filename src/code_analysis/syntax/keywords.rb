@@ -19,6 +19,7 @@ module Keywords
     "match" => Syntax::Match,
     "global" => Syntax::Global,
     "const" => Syntax::Constant,
+    "return" => Syntax::Return
   }.freeze
 
   TYPE_KEYWORDS = {
