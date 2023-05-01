@@ -16,16 +16,61 @@ class Parser
     nodes = []
     while token = @tokens[@position]
       case token.syntax_type
-      when Syntax::Float, Syntax::String, Syntax::None
-        nodes.push(LiteralNode.new(token))
+      when Syntax::Float, Syntax::String, Syntax::None, Syntax::LeftParen
+        nodes.push(parse_expression)
       when Syntax::EOF
         break
       else
         logger.report_error("Unexpected token", token.syntax_type, token.position, token.line)
       end
-      @position += 1
     end
 
     nodes
+  end
+
+  def parse_expression
+    left = parse_primary_expression
+
+    while token = @tokens[@position]
+      case token.syntax_type
+      when Syntax::Plus, Syntax::Minus
+        advance
+        left = BinaryNode.new(left, token, parse_primary_expression)
+      else
+        break
+      end
+    end
+
+    left
+  end
+
+  def parse_primary_expression
+    token = @tokens[@position]
+    case token.syntax_type
+    when Syntax::Float, Syntax::String, Syntax::None
+      advance
+      LiteralNode.new(token)
+    when Syntax::LeftParen
+      advance
+      node = parse_expression
+      consume(Syntax::RightParen, "Expected ')'")
+      node
+    else
+      logger.report_error("Unexpected token", token.syntax_type, token.position, token.line)
+    end
+  end
+
+  def consume(syntax, error_msg)
+    token = @tokens[@position]
+    if token.syntax_type == syntax
+      advance
+    else
+      logger.report_error(error_msg, token.syntax_type, token.position, token.line)
+    end
+    token
+  end
+
+  def advance
+    @position += 1
   end
 end

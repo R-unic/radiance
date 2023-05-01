@@ -14,16 +14,16 @@ class LiteralNode < Node
 end
 
 class BinaryNode < Node
-  attr_reader :operator, :left, :right
+  attr_reader :left, :operator, :right
 
-  def initialize(operator, left, right)
-    super([])
-    @operator = operator
+  def initialize(left, operator, right)
+    super()
     @left = left
+    @operator = operator
     @right = right
   end
 
   def to_s
-    "Binary<operator: #{@operator.syntax_type}, left: #{@left}, right: #{@right}>"
+    "Binary<left: #{@left}, operator: #{@operator.syntax_type}, right: #{@right}>"
   end
 end
