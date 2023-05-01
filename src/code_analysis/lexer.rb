@@ -57,7 +57,7 @@ class Lexer
   end
 
   def add_token(syntax, value)
-    @tokens << Token.new(syntax, value)
+    @tokens << Token.new(syntax, value, @position, @line)
   end
 
   def is_hex?
