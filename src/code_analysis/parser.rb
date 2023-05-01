@@ -29,6 +29,8 @@ class Parser
       Syntax::Minus,
       Syntax::Bang
         nodes << parse_primary_expression
+      when Syntax::LeftBrace
+        nodes << parse_block
       when Syntax::EOF
         break
       else
