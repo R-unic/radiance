@@ -1,43 +1,66 @@
 class Node; end
 
-class LiteralNode < Node
-  attr_reader :token
+module Expression
+  class Expr < Node; end
 
-  def initialize(token)
-    super()
-    @token = token
+  class Literal < Expr
+    attr_reader :token
+
+    def initialize(token)
+      super()
+      @token = token
+    end
+
+    def to_s
+      "Literal<syntax: #{@token.syntax_type}, value: #{@token.value}>"
+    end
   end
 
-  def to_s
-    "Literal<syntax: #{@token.syntax_type}, value: #{@token.value}>"
+  class BinaryOp < Node
+    attr_reader :left, :operator, :right
+
+    def initialize(left, operator, right)
+      super()
+      @left = left
+      @operator = operator
+      @right = right
+    end
+
+    def to_s
+      "Binary<left: #{@left}, operator: #{@operator.syntax_type}, right: #{@right}>"
+    end
+  end
+
+  class UnaryOp < Node
+    attr_reader :operator, :operand
+
+    def initialize(operator, operand)
+      super()
+      @operator = operator
+      @operand = operand
+    end
+
+    def to_s
+      "Unary<operator: #{@operator}, operand: #{@operand}>"
+    end
   end
 end
 
-class BinaryOpNode < Node
-  attr_reader :left, :operator, :right
+module Statement
+  class Stmt < Node; end
 
-  def initialize(left, operator, right)
-    super()
-    @left = left
-    @operator = operator
-    @right = right
-  end
+  class If < Stmt
+    attr_reader :condition, :block, :else_branch
 
-  def to_s
-    "Binary<left: #{@left}, operator: #{@operator.syntax_type}, right: #{@right}>"
-  end
-end
+    def initialize(condition, block, else_branch)
+      super()
+      @condition = condition
+      @block = block
+      @else_branch = else_branch
+    end
 
-class UnaryOpNode < Node
-  attr_reader :operator, :operand
-
-  def initialize(operator, operand)
-    super()
-    @operator = operator
-    @operand = operand
-  end
-
-  def to_s
-    "Unary<operator: #{@operator}, operand: #{@operand}>"
+    def to_s
+      "If<condition: #{@condition},block: #{@block}, else_branch: #{@else_branch}>"
+    end
   end
 end

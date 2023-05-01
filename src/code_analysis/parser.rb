@@ -69,7 +69,7 @@ class Parser
       Syntax::HyphenArrow,
         advance
         advance
-        left = BinaryOpNode.new(left, token, parse_primary_expression)
+        left = Expression::BinaryOp.new(left, token, parse_primary_expression)
       when Syntax::RightParen
         left
       when Syntax::EOF
@@ -88,13 +88,13 @@ class Parser
     case token.syntax_type
     when Syntax::Float, Syntax::String, Syntax::Boolean, Syntax::None, Syntax::Identifier
       advance
-      LiteralNode.new(token)
+      Expression::Literal.new(token)
     when
     Syntax::Plus,
     Syntax::Minus,
     Syntax::Bang
       advance
-      UnaryOpNode.new(token, parse_primary_expression)
+      Expression::UnaryOp.new(token, parse_primary_expression)
     when Syntax::LeftParen
       advance
       node = parse_expression

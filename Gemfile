@@ -7,3 +7,5 @@ source "https://rubygems.org"
 
 gem "optparse", "~> 0.3.1"
 gem "readline", "~> 0.0.3"
+
+gem "benchmark", "~> 0.2.1"

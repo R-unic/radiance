@@ -89,7 +89,7 @@ class Lexer
         match_char("#") &&
         match_char("#")
     else
-      @line == current_line || finished?
+      @line != current_line || finished?
     end
   end
 
