@@ -36,8 +36,9 @@ class Token
     @line = line
   end
 
-  def to_s
+  def to_s(indent = 0)
+    prefix = "\t" * indent
     value_str = @value.nil? ? "none" : PossibleTokenValue.new(@syntax_type, @value).to_s
-    "Token<syntax: #{@syntax_type}, value: #{value_str.start_with?("Ident<") ? value_str : value_str[1..-2]}>"
+    "#{prefix}Token<syntax: #{@syntax_type}, value: #{value_str.start_with?("Ident<") ? value_str : value_str[1..-2]}>"
   end
 end

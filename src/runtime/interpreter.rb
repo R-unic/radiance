@@ -1,12 +1,20 @@
 require "benchmark"
 require_relative "../code_analysis/parser"
+require_relative "scope"
 
 class Interpreter
-  def interpret(source)
-    time = Benchmark.realtime do
-      parser = Parser.new(source)
-      puts parser.parse
-    end
-    puts "Done. Took #{(time * 1000).round}ms"
+  def initialize(source)
+    parser = Parser.new(@source)
+    @source = source
+    @ast = parser.parse
+    @scope = Scope.new
+  end
+
+  def interpret
+    ast.each { |node| walk(node) }
+  end
+
+  def walk
+
   end
 end

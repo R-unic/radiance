@@ -7,9 +7,12 @@ def lang_name
 end
 
 class CLI
-  @@interpreter = Interpreter.new
-
   class << self
+    def read_source(source)
+      interpreter = Interpreter.new(source)
+      interpreter.interpret
+    end
+
     def read_file(path)
       File.read(path)
     rescue StandardError => e
@@ -22,7 +25,7 @@ class CLI
       loop do
         line = Readline.readline("➤ ", true)
         break if line.nil?
-        @@interpreter.interpret(line)
+        puts read_source(line)
       end
     end
 
@@ -41,7 +44,7 @@ class CLI
       else
         path = ARGV[0]
         file_contents = read_file(path)
-        @@interpreter.interpret(file_contents)
+        read_source(file_contents)
       end
     end
   end
