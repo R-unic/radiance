@@ -63,16 +63,19 @@ end
 module Statement
   class Stmt < Node; end
 
-  class Return < Stmt
-    attr_reader :expression
+  class Function < Stmt
+    attr_reader :identifier, :arguments, :block, :return
 
-    def initialize(expression)
+    def initialize(identifier, arguments, block, _return)
       super()
-      @expression = expression
+      @identifier = identifier
+      @arguments = arguments
+      @block = block
+      @return = _return
     end
 
     def to_s
-      "Return<expression: #{@expression}>"
+      "Function<identifier: #{@identifier}, arguments: #{@arguments}, block: #{@block}, return: #{@return}>"
     end
   end
 
@@ -91,7 +94,7 @@ module Statement
     end
   end
 
-  class Expression < Stmt
+  class ExpressionStmt < Stmt
     attr_reader :expression
 
     def initialize(expression)
@@ -101,6 +104,12 @@ module Statement
 
     def to_s
       "ExpressionStmt<expression: #{@expression}>"
+    end
+  end
+
+  class Return < ExpressionStmt
+    def to_s
+      "Return<expression: #{@expression}>"
     end
   end
 

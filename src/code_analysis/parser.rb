@@ -53,14 +53,37 @@ class Parser
     Syntax::Boolean,
     Syntax::None
       parse_expression_stmt
+    when Syntax::Function
+      identifier = advance
+      advance
+      arg_expressions = parse_def_args
+      consume(Syntax::RightParen, "Expected ')' after function arguments, got")
+      block = parse_block
+      if block.statements.count { |s| s.is_a?(Statement::Return) } > 1
+        logger.report_error("Function with multiple returns", identifier.value, identifier.position, identifier.line)
+      end
+      if block.statements.last.is_a?(Statement::Return)
+        returns = block.statements.pop.expression
+      else
+        returns = block.statements.pop
+      end
+      Statement::Function.new(identifier, arg_expressions, block, returns)
+    when Syntax::Return
+      parse_return_stmt
     else
       logger.report_error("Invalid syntax", token.syntax_type, token.position, token.line)
     end
   end
 
+  def parse_return_stmt
+    advance
+    expr = parse_expression
+    Statement::Return.new(expr)
+  end
+
   def parse_expression_stmt
     expr = parse_expression
-    Statement::Expression.new(expr)
+    Statement::ExpressionStmt.new(expr)
   end
 
   def parse_if_stmt
@@ -123,6 +146,9 @@ class Parser
       when Syntax::RightParen
         left
         break
+      when Syntax::RightBrace
+        left
+        break
       when Syntax::EOF
         break
       else
@@ -134,8 +160,13 @@ class Parser
     left
   end
 
-  def parse_function_call_expression(identifier)
-    first = advance
+  def parse_def_args
+    parse_call_args
+  end
+
+  def parse_call_args
+    consume(Syntax::LeftParen, "Expected '(' after function name, got")
+    first = @tokens[@position]
     arg_expressions = []
     if !first.nil? && first.syntax_type != Syntax::RightParen
       arg_expressions << first
@@ -148,7 +179,11 @@ class Parser
         current = advance
       end
     end
-    Expression::FunctionCall.new(identifier, arg_expressions)
+    arg_expressions
+  end
+
+  def parse_function_call_expression(identifier)
+    Expression::FunctionCall.new(identifier, parse_call_args)
   end
 
   def parse_primary_expression
@@ -176,6 +211,8 @@ class Parser
       @position -= 2
       consume(Syntax::RightParen, "Expected ')', got")
       node
+    when Syntax::Return
+      parse_stmt
     when Syntax::EOF
     else
       logger.report_error("Invalid syntax", token.syntax_type, token.position, token.line)

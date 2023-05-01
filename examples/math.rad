@@ -1,3 +1,4 @@
-if (true) {
-  print($*&#782324578)
+fn sayHi(name) {
+  return print("HI")
+  return print(name)
 }
