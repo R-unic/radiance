@@ -33,7 +33,7 @@ module Syntax
   BangEqual = :BangEqual
   Ampersand = :Ampersand
   Pipe = :Pipe
-  PipeEqual = :PipeEqual
+  Question = :Question
   ColonColon = :ColonColon
   Colon = :Colon
   Dot = :Dot

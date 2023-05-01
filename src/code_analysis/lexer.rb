@@ -262,11 +262,10 @@ class Lexer
       add_token(Syntax::Ampersand, nil)
       advance
     when "|"
-      if match_char("=")
-        add_token(Syntax::PipeEqual, nil)
-      else
-        add_token(Syntax::Pipe, nil)
-      end
+      add_token(Syntax::Pipe, nil)
+      advance
+    when "?"
+      add_token(Syntax::Question, nil)
       advance
     when "!"
       if match_char("=")

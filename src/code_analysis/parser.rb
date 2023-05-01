@@ -16,12 +16,13 @@ class Parser
     nodes = []
     while token = @tokens[@position]
       case token.syntax_type
-      when Syntax::Float, Syntax::String, Syntax::None, Syntax::LeftParen
+      when Syntax::Float, Syntax::String, Syntax::None, Syntax::Identifier, Syntax::LeftParen
         nodes.push(parse_expression)
       when Syntax::EOF
         break
       else
-        logger.report_error("Unexpected token", token.syntax_type, token.position, token.line)
+        logger.report_error("Invalid syntax", token.syntax_type, token.position, token.line)
+        break
       end
     end
 
@@ -33,10 +34,34 @@ class Parser
 
     while token = @tokens[@position]
       case token.syntax_type
-      when Syntax::Plus, Syntax::Minus
+      when
+      Syntax::Plus,
+      Syntax::Minus,
+      Syntax::Star,
+      Syntax::Slash,
+      Syntax::Carat,
+      Syntax::Percent,
+      Syntax::PlusEqual,
+      Syntax::MinusEqual,
+      Syntax::StarEqual,
+      Syntax::SlashEqual,
+      Syntax::CaratEqual,
+      Syntax::PercentEqual,
+      Syntax::Equal,
+      Syntax::EqualEqual,
+      Syntax::Less,
+      Syntax::Greater,
+      Syntax::Ampersand,
+      Syntax::Pipe,
+      Syntax::Question,
+      Syntax::HyphenArrow,
+        advance
         advance
         left = BinaryNode.new(left, token, parse_primary_expression)
+      when Syntax::EOF
+        break
       else
+        logger.report_error("Invalid syntax", token.syntax_type, token.position, token.line)
         break
       end
     end
@@ -47,7 +72,7 @@ class Parser
   def parse_primary_expression
     token = @tokens[@position]
     case token.syntax_type
-    when Syntax::Float, Syntax::String, Syntax::None
+    when Syntax::Float, Syntax::String, Syntax::None, Syntax::Identifier
       advance
       LiteralNode.new(token)
     when Syntax::LeftParen
@@ -55,8 +80,10 @@ class Parser
       node = parse_expression
       consume(Syntax::RightParen, "Expected ')'")
       node
+    when Syntax::EOF
+      break
     else
-      logger.report_error("Unexpected token", token.syntax_type, token.position, token.line)
+      logger.report_error("Invalid syntax", token.syntax_type, token.position, token.line)
     end
   end
 
