@@ -92,8 +92,10 @@ class Parser
     condition = parse_expression
     block = parse_block
     if @tokens[@position].syntax_type == Syntax::Else
-      advance
-      else_branch = parse_if_stmt
+      branch = advance
+      if branch.syntax_type == Syntax::If
+        else_branch = parse_if_stmt
+      end
     else
       else_branch = nil
     end

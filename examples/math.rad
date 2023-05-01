@@ -1,4 +1,6 @@
-fn sayHi(name) {
-  return print("HI")
-  return print(name)
+if (true) {
+  print("truth")
+} else if (true & otherThing) {
+  print("lie")
 }
+
