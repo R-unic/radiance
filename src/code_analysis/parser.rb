@@ -95,6 +95,8 @@ class Parser
       branch = advance
       if branch.syntax_type == Syntax::If
         else_branch = parse_if_stmt
+      else
+        else_branch = parse_block
       end
     else
       else_branch = nil

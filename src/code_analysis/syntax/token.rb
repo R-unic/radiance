@@ -18,6 +18,8 @@ class PossibleTokenValue
       "'#{@value}'"
     when Syntax::None
       "none"
+    when Syntax::Identifier
+      "Ident<#{@value.to_s}>"
     else
       @value.to_s
     end
@@ -36,6 +38,7 @@ class Token
 
   def to_s
     value_str = @value.nil? ? "none" : PossibleTokenValue.new(@syntax_type, @value).to_s
-    "Token<syntax: #{@syntax_type}, value: #{value_str}>"
+
+    "Token<syntax: #{@syntax_type}, value: #{value_str.start_with?("Ident<") ? value_str : value_str[1..-2]}>"
   end
 end

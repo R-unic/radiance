@@ -13,7 +13,7 @@ module Expression
     end
 
     def to_s
-      "FunctionCall<identifier: #{@identifier} arguments: #{@arguments.to_s}>"
+      "FunctionCall<identifier: #{@identifier} arguments: #{@arguments.map(&:to_s).join(", ")}>"
     end
   end
 
@@ -75,7 +75,7 @@ module Statement
     end
 
     def to_s
-      "Function<identifier: #{@identifier}, arguments: #{@arguments.to_s}, block: #{@block}, return: #{@return}>"
+      "Function<identifier: #{@identifier}, arguments: #{@arguments.map(&:to_s).join(", ")}, block: #{@block}, return: #{@return}>"
     end
   end
 
@@ -122,7 +122,7 @@ module Statement
     end
 
     def to_s
-      "Block<statements: #{@statements.to_s}>"
+      "Block<statements: #{@statements.map(&:to_s).join(", ")}>"
     end
   end
 end
