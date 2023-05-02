@@ -12,7 +12,6 @@ class Interpreter
   def interpret(source, repl)
     parser = Parser.new(source)
     ast = parser.parse
-    puts ast
     ast.each do |node|
       result = evaluate(node)
       puts result == nil ? "none" : result unless !repl
@@ -41,6 +40,18 @@ class Interpreter
         left & right
       when Syntax::Pipe
         left || right
+      when Syntax::Less
+        left < right
+      when Syntax::LessEqual
+        left <= right
+      when Syntax::Greater
+        left > right
+      when Syntax::GreaterEqual
+        left >= right
+      when Syntax::EqualEqual
+        left == right
+      when Syntax::BangEqual
+        left != right
       when Syntax::Question
         left == nil ? right : left
       end
