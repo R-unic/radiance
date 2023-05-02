@@ -99,11 +99,13 @@ class Interpreter
           @scope.add_variable(arg_names[i], arg)
         end
 
+        puts node.block.statements
+        result = node.block.statements.pop
         node.block.statements.each do |stmt|
           evaluate(stmt)
         end
 
-        result = node.return ? evaluate(node.return) : nil
+        result = node.return ? evaluate(node.return) : evaluate(result)
         @scope = @scope.unwrap
 
         result
@@ -120,13 +122,12 @@ class Interpreter
 
     # when Statement::For
 
-    when Statement::ExpressionStmt
+    when Statement::ExpressionStmt, Statement::Return
       evaluate(node.expression)
-    when Statement::Return
-
     when Statement::Block
       @scope = Scope.new(@scope)
       node.statements.each { |stmt| evaluate(stmt) }
+      @scope = @scope.unwrap
     else
       @logger.report_error("Unhandled AST node", node, 0, 0)
     end

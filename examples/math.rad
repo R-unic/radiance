@@ -1,5 +1,6 @@
-fn say(name) {
-  print(name)
+fn get() {
+  a = 5
+  6
 }
 
-say("hi")
+print(get())

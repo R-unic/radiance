@@ -62,6 +62,8 @@ class Parser
     Syntax::Boolean,
     Syntax::None
       parse_expression_stmt
+    when Syntax::Return
+      parse_return_stmt
     when Syntax::Function
       identifier = advance
       advance
@@ -76,8 +78,6 @@ class Parser
         returns = block.statements.pop
       end
       Statement::Function.new(identifier, arg_expressions, block, returns)
-    when Syntax::Return
-      parse_return_stmt
     else
       logger.report_error("Invalid syntax", token.syntax_type, token.position, token.line)
     end
@@ -162,8 +162,8 @@ class Parser
       when Syntax::RightParen, Syntax::RightBrace, Syntax::EOF
         break
       else
-        logger.report_error("Invalid syntax", token.syntax_type, token.position, token.line)
-        break
+        # logger.report_error("Invalid syntax", token.syntax_type, token.position, token.line)
+        left = parse_stmt
       end
     end
 
