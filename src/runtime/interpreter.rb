@@ -4,16 +4,14 @@ require_relative "../logger"
 require_relative "../code_analysis/parser"
 
 class Interpreter
-  def initialize(source)
-    parser = Parser.new(source)
-    @source = source
-    @ast = parser.parse
-    puts @ast
+  def initialize
     @scope = Scope.new
   end
 
-  def interpret(repl)
-    @ast.each do |node|
+  def interpret(source, repl)
+    parser = Parser.new(source)
+    ast = parser.parse
+    ast.each do |node|
       result = evaluate(node)
       puts result unless !repl
     end
@@ -29,6 +27,7 @@ class Interpreter
       node.token.value
     when Expression::VariableReference
       @scope.lookup_variable(node.identifier)
+      puts @scope
     when Expression::VariableAssignment
       value = evaluate(node.expression)
       @scope.add_variable(node.identifier, value)

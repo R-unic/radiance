@@ -7,10 +7,11 @@ def lang_name
 end
 
 class CLI
+  @@interpreter = Interpreter.new
+
   class << self
     def read_source(source, repl = false)
-      interpreter = Interpreter.new(source)
-      interpreter.interpret(repl)
+      @@interpreter.interpret(source, repl)
     end
 
     def read_file(path)

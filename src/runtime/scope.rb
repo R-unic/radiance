@@ -16,4 +16,8 @@ class Scope
   def lookup_variable(identifier)
     @local_variables[identifier]
   end
+
+  def to_s
+    "Scope<#{@parent ? "parent: " + @parent.to_s + ", " : ""}#{@local_variables}>"
+  end
 end
