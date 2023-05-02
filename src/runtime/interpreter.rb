@@ -22,7 +22,16 @@ class Interpreter
     when Expression::BinaryOp
 
     when Expression::UnaryOp
-
+      case node.operator.syntax_type
+      when Syntax::Bang
+        bool = evaluate(node.operand)
+        !bool
+      when Syntax::Minus
+        n = evaluate(node.operand)
+        -n
+      when Syntax::Plus
+        evaluate(node.operand)
+      end
     when Expression::Literal
       case node.token.syntax_type
       when Syntax::Float
