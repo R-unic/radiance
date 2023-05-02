@@ -184,7 +184,6 @@ class Parser
       arg_expressions << parse_primary_expression
       first_time = false
     end
-    puts arg_expressions
     consume(Syntax::RightParen, "Expected ')' after argument list, got")
     arg_expressions
   end

@@ -1,5 +1,6 @@
 require "benchmark"
 require_relative "scope"
+require_relative "types"
 require_relative "../logger"
 require_relative "../code_analysis/parser"
 
@@ -7,6 +8,11 @@ class Interpreter
   def initialize
     @scope = Scope.new
     @logger = Logger.new
+    define_intrinsics
+  end
+
+  def define_intrinsics
+    @scope.add_variable("print", RuntimeTypes::Function.new { |m| puts m })
   end
 
   def interpret(source, repl)
@@ -77,22 +83,29 @@ class Interpreter
         node.token.value.value.to_s
       end
     when Expression::FunctionCall
-
+      fn = @scope.lookup_variable(node.identifier.value.value, node.identifier)
+      args = node.arguments.map { |arg| evaluate(arg) }
+      fn.call(args)
     when Expression::VariableAssignment
       value = evaluate(node.expression)
       @scope.add_variable(node.reference.identifier.value.value, value)
     when Expression::VariableReference
-      @scope.lookup_variable(node.identifier.value.value)
+      @scope.lookup_variable(node.identifier.value.value, node.identifier)
     when Statement::Function
 
     when Statement::If
-
+      condition = evaluate(node.condition)
+      if condition
+        evaluate(node.block)
+      else
+        evaluate(node.else_branch)
+      end
     # when Statement::While
 
     # when Statement::For
 
     when Statement::ExpressionStmt
-
+      evaluate(node.expression)
     when Statement::Return
 
     when Statement::Block

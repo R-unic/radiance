@@ -72,16 +72,17 @@ module Expression
     end
   end
 
-  class FunctionCall < VariableReference
+  class FunctionCall < Expr
     attr_reader :identifier, :arguments
 
     def initialize(identifier, arguments)
-      super(identifier)
+      super()
+      @identifier = identifier
       @arguments = arguments
     end
 
     def to_s
-      "FunctionCall<identifier: #{@identifier} arguments: #{@arguments.map(&:to_s).join(", ")}>"
+      "FunctionCall<identifier: #{@identifier} arguments: [#{@arguments.map(&:to_s).join(", ")}]>"
     end
   end
 end
@@ -101,7 +102,7 @@ module Statement
     end
 
     def to_s
-      "Function<identifier: #{@identifier}, arguments: #{@arguments.map(&:to_s).join(", ")}, block: #{@block}, return: #{@return}>"
+      "Function<identifier: #{@identifier}, arguments: [#{@arguments.map(&:to_s).join(", ")}], block: #{@block}, return: #{@return}>"
     end
   end
 
@@ -148,7 +149,7 @@ module Statement
     end
 
     def to_s
-      "Block<statements: #{@statements.map(&:to_s).join(", ")}>"
+      "Block<statements: [#{@statements.map(&:to_s).join(", ")}]>"
     end
   end
 end

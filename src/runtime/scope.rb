@@ -7,18 +7,27 @@ class Scope
   def initialize(parent = nil)
     @parent = parent
     @local_variables = {}
+    @logger = Logger.new
   end
 
   def add_variable(identifier, value)
     @local_variables[identifier] = value
   end
 
-  def lookup_variable(identifier)
-    @local_variables[identifier]
+  def lookup_variable(identifier, token)
+    value = @local_variables[identifier]
+    unless @parent.nil?
+      value = @parent.lookup_variable(identifier, token)
+    else
+      if value.nil?
+        @logger.report_error("Undefined variable", token.value, token.position, token.line)
+      end
+    end
+    value
   end
 
   def to_s
-    variables = @local_variables.transform_keys { |key| key.value }
+    variables = @local_variables
     "Scope<#{@parent ? "parent: " + @parent.to_s + ", " : ""}#{variables}>"
   end
 end
