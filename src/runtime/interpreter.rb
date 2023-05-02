@@ -20,17 +20,37 @@ class Interpreter
   def evaluate(node)
     case node
     when Expression::BinaryOp
-
+      left = evaluate(node.left)
+      right = evaluate(node.right)
+      case node.operator.syntax_type
+      when Syntax::Plus
+        left + right
+      when Syntax::Minus
+        left - right
+      when Syntax::Star
+        left + right
+      when Syntax::Slash
+        left / right
+      when Syntax::Carat
+        left ** right
+      when Syntax::Percent
+        left % right
+      when Syntax::Ampersand
+        left & right
+      when Syntax::Pipe
+        left || right
+      when Syntax::Question
+        left == nil ? right : left
+      end
     when Expression::UnaryOp
+      operand = evaluate(node.operand)
       case node.operator.syntax_type
       when Syntax::Bang
-        bool = evaluate(node.operand)
-        !bool
+        !operand
       when Syntax::Minus
-        n = evaluate(node.operand)
-        -n
+        -operand
       when Syntax::Plus
-        evaluate(node.operand)
+        operand
       end
     when Expression::Literal
       case node.token.syntax_type
