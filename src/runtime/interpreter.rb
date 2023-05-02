@@ -13,7 +13,7 @@ class Interpreter
     ast = parser.parse
     ast.each do |node|
       result = evaluate(node)
-      puts result unless !repl
+      puts result == nil ? "none" : result unless !repl
     end
   end
 
@@ -58,6 +58,8 @@ class Interpreter
         node.token.value.value
       when Syntax::Boolean
         node.token.value.value
+      when Syntax::None
+        nil
       else
         node.token.value.value.to_s
       end
