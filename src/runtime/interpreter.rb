@@ -92,7 +92,23 @@ class Interpreter
     when Expression::VariableReference
       @scope.lookup_variable(node.identifier.value.value, node.identifier)
     when Statement::Function
+      arg_names = node.arguments.map { |a| a.identifier.value.value }
+      callback = lambda do |*args|
+        @scope = Scope.new(@scope)
+        args.each_with_index do |arg, i|
+          @scope.add_variable(arg_names[i], arg)
+        end
 
+        node.block.statements.each do |stmt|
+          evaluate(stmt)
+        end
+
+        result = node.return ? evaluate(node.return) : nil
+        @scope = @scope.unwrap
+
+        result
+      end
+      @scope.add_variable(node.identifier.value.value, RuntimeTypes::Function.new(&callback))
     when Statement::If
       condition = evaluate(node.condition)
       if condition

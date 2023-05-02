@@ -1,4 +1,5 @@
-if true {
-  print("hi", "h")
+fn say(name) {
+  print(name)
 }
 
+say("hi")

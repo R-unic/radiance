@@ -16,14 +16,17 @@ class Scope
 
   def lookup_variable(identifier, token)
     value = @local_variables[identifier]
-    unless @parent.nil?
+    if value.nil? && @parent.nil?
+      @logger.report_error("Undefined variable", token.value, token.position, token.line)
+    end
+    if value.nil? && !@parent.nil?
       value = @parent.lookup_variable(identifier, token)
-    else
-      if value.nil?
-        @logger.report_error("Undefined variable", token.value, token.position, token.line)
-      end
     end
     value
+  end
+
+  def unwrap
+    @parent
   end
 
   def to_s

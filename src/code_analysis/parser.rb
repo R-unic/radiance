@@ -66,7 +66,6 @@ class Parser
       identifier = advance
       advance
       arg_expressions = parse_def_args
-      consume(Syntax::RightParen, "Expected ')' after function arguments, got")
       block = parse_block
       if block.statements.count { |s| s.is_a?(Statement::Return) } > 1
         logger.report_error("Function with multiple returns", identifier.value, identifier.position, identifier.line)
