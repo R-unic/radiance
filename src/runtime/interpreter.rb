@@ -41,7 +41,8 @@ class Interpreter
     when Statement::Return
 
     when Statement::Block
-
+      @scope = Scope.new(@scope)
+      node.statements.each { |stmt| evaluate(stmt) }
     else
       logger.report_error("Unhandled AST node: #{node}")
     end

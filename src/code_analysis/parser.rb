@@ -112,6 +112,7 @@ class Parser
   end
 
   def parse_expression
+    # kinda misleading name lol
     left = parse_primary_expression
 
     while token = @tokens[@position]
@@ -129,7 +130,6 @@ class Parser
       Syntax::SlashEqual,
       Syntax::CaratEqual,
       Syntax::PercentEqual,
-      Syntax::Equal,
       Syntax::EqualEqual,
       Syntax::BangEqual,
       Syntax::Less,
@@ -141,6 +141,10 @@ class Parser
         advance
         advance
         left = Expression::BinaryOp.new(left, token, parse_primary_expression)
+      when Syntax::Equal
+        advance
+        advance
+        left = Expression::VariableAssignment.new(left, parse_primary_expression)
       when Syntax::LeftParen
         parse_expression
       when Syntax::RightParen
@@ -197,7 +201,7 @@ class Parser
       if !next_token.nil? && next_token.syntax_type == Syntax::LeftParen
         parse_function_call_expression(token)
       else
-        Expression::Literal.new(token)
+        Expression::VariableReference.new(token)
       end
     when
     Syntax::Plus,

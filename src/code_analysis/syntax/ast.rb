@@ -3,20 +3,6 @@ class Node; end
 module Expression
   class Expr < Node; end
 
-  class FunctionCall < Expr
-    attr_reader :identifier, :arguments
-
-    def initialize(identifier, arguments)
-      super()
-      @identifier = identifier
-      @arguments = arguments
-    end
-
-    def to_s
-      "FunctionCall<identifier: #{@identifier} arguments: #{@arguments.map(&:to_s).join(", ")}>"
-    end
-  end
-
   class BinaryOp < Node
     attr_reader :left, :operator, :right
 
@@ -56,6 +42,45 @@ module Expression
 
     def to_s
       "Literal<syntax: #{@token.syntax_type}, value: #{@token.value}>"
+    end
+  end
+
+  class VariableReference < Expr
+    attr_reader :identifier
+
+    def initialize(identifier)
+      super()
+      @identifier = identifier
+    end
+
+    def to_s
+      "VariableReference<syntax: #{@token.syntax_type}, value: #{@token.value}>"
+    end
+  end
+
+  class VariableAssignment < VariableReference
+    attr_reader :identifier, :expression
+
+    def initialize(identifier, expression)
+      super(identifier)
+      @expression = expression
+    end
+
+    def to_s
+      "VariableAssignment<identifier: #{@identifier}, expression: #{@expression}>"
+    end
+  end
+
+  class FunctionCall < VariableReference
+    attr_reader :identifier, :arguments
+
+    def initialize(identifier, arguments)
+      super(identifier)
+      @arguments = arguments
+    end
+
+    def to_s
+      "FunctionCall<identifier: #{@identifier} arguments: #{@arguments.map(&:to_s).join(", ")}>"
     end
   end
 end
