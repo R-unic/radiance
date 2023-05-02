@@ -1,0 +1,6 @@
+fn get() {
+  a = 5
+  6
+}
+
+print(get())

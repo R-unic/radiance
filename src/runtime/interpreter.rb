@@ -5,7 +5,8 @@ require_relative "../logger"
 require_relative "../code_analysis/parser"
 
 class Interpreter
-  def initialize
+  def initialize(output_ast = false)
+    @output_ast = output_ast
     @scope = Scope.new
     @logger = Logger.new
     define_intrinsics
@@ -13,11 +14,13 @@ class Interpreter
 
   def define_intrinsics
     @scope.add_variable("print", RuntimeTypes::Function.new { |m| puts m })
+    @scope.add_variable("CWD", Dir.pwd)
   end
 
   def interpret(source, repl)
     parser = Parser.new(source)
     ast = parser.parse
+    puts ast if @output_ast
     ast.each do |node|
       result = evaluate(node)
       puts result == nil ? "none" : result unless !repl
@@ -35,7 +38,7 @@ class Interpreter
       when Syntax::Minus
         left - right
       when Syntax::Star
-        left + right
+        left * right
       when Syntax::Slash
         left / right
       when Syntax::Carat
@@ -43,7 +46,7 @@ class Interpreter
       when Syntax::Percent
         left % right
       when Syntax::Ampersand
-        left & right
+        left && right
       when Syntax::Pipe
         left || right
       when Syntax::Less
@@ -67,6 +70,7 @@ class Interpreter
       when Syntax::Bang
         !operand
       when Syntax::Minus
+        # TODO: typechecking
         -operand
       when Syntax::Plus
         operand
@@ -99,7 +103,6 @@ class Interpreter
           @scope.add_variable(arg_names[i], arg)
         end
 
-        puts node.block.statements
         result = node.block.statements.pop
         node.block.statements.each do |stmt|
           evaluate(stmt)
@@ -118,6 +121,7 @@ class Interpreter
       else
         evaluate(node.else_branch)
       end
+      nil
     # when Statement::While
 
     # when Statement::For

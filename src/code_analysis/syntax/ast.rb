@@ -68,7 +68,7 @@ module Expression
     end
 
     def to_s
-      "VariableAssignment<identifier: #{@identifier}, expression: #{@expression}>"
+      "VariableAssignment<reference: #{@reference}, expression: #{@expression}>"
     end
   end
 

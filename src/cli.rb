@@ -7,8 +7,6 @@ def lang_name
 end
 
 class CLI
-  @@interpreter = Interpreter.new
-
   class << self
     def read_source(source, repl = false)
       @@interpreter.interpret(source, repl)
@@ -38,8 +36,12 @@ class CLI
           puts opts
           exit
         end
+        opts.on("-a", "--ast", "Output the AST") do
+          options[:output_ast] = true
+        end
       end.parse!(into: options)
 
+      @@interpreter = Interpreter.new(options[:output_ast])
       if ARGV.empty?
         run_repl
       else
