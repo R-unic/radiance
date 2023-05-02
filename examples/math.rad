@@ -1,8 +1,4 @@
-if (true) {
-  print("truth")
-} else if (true & otherThing) {
-  print("lie")
-} else {
-  print("e")
+if true {
+  5
 }
 

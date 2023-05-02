@@ -4,6 +4,15 @@ require_relative "../logger"
 
 class Parser
   attr_accessor :position, :tokens, :logger
+  OPERATOR_PRECEDENCE = {
+    Syntax::Question => 1,
+    Syntax::EqualEqual => 2, Syntax::BangEqual => 2,
+    Syntax::Less => 3, Syntax::Greater => 3,
+    Syntax::Plus => 4, Syntax::Minus => 4,
+    Syntax::Star => 5, Syntax::Slash => 5, Syntax::Percent => 5,
+    Syntax::Carat => 6,
+    Syntax::Ampersand => 7, Syntax::Pipe => 8
+  }
 
   def initialize(source)
     lexer = Lexer.new(source)
@@ -88,7 +97,6 @@ class Parser
 
   def parse_if_stmt
     advance
-    consume(Syntax::LeftParen, "Expected '(' after 'if', got")
     condition = parse_expression
     block = parse_block
     if @tokens[@position].syntax_type == Syntax::Else
@@ -111,7 +119,7 @@ class Parser
     Statement::Block.new(statements)
   end
 
-  def parse_expression
+  def parse_expression(precedence = 0)
     # kinda misleading name lol
     left = parse_primary_expression
 
@@ -136,10 +144,10 @@ class Parser
       Syntax::Greater,
       Syntax::Ampersand,
       Syntax::Pipe,
-      Syntax::Question,
-      Syntax::HyphenArrow
+      Syntax::Question
         advance
-        left = Expression::BinaryOp.new(left, token, parse_primary_expression)
+        right = parse_expression(OPERATOR_PRECEDENCE[token.syntax_type] + 1)
+        left = Expression::BinaryOp.new(left, token, right)
       when Syntax::Equal
         unless left.is_a?(Expression::VariableReference)
           @logger.report_error("Syntax error", "Invalid assignment", token.position, token.line)
@@ -147,14 +155,12 @@ class Parser
         advance
         left = Expression::VariableAssignment.new(left, parse_primary_expression)
       when Syntax::LeftParen
-        parse_expression
-      when Syntax::RightParen
-        left
+        advance
+        parse_primary_expression
+        consume(Syntax::RightParen, "Expected ')' after expression, got", -2)
+      when Syntax::LeftBrace
         break
-      when Syntax::RightBrace
-        left
-        break
-      when Syntax::EOF
+      when Syntax::RightParen, Syntax::RightBrace, Syntax::EOF
         break
       else
         logger.report_error("Invalid syntax", token.syntax_type, token.position, token.line)
@@ -212,10 +218,9 @@ class Parser
       Expression::UnaryOp.new(token, parse_primary_expression)
     when Syntax::LeftParen
       advance
-      node = parse_expression
-      @position -= 2
-      consume(Syntax::RightParen, "Expected ')', got")
-      node
+      expr = parse_expression
+      consume(Syntax::RightParen, "Expected ')' after expression, got")
+      expr
     when Syntax::Return
       parse_stmt
     when Syntax::EOF
@@ -224,9 +229,14 @@ class Parser
     end
   end
 
-  def consume(syntax, error_msg)
+  def consume(syntax, error_msg, offset = 0)
     token = @tokens[@position]
-    logger.report_error(error_msg, token.syntax_type, token.position, token.line) unless token.syntax_type == syntax rescue advance
+    unless token.syntax_type == syntax
+      shown_token = @tokens[@position + offset]
+      logger.report_error(error_msg, shown_token.syntax_type, shown_token.position, shown_token.line)
+    else
+      advance
+    end
     token
   end
 

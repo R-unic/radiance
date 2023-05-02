@@ -6,11 +6,13 @@ require_relative "../code_analysis/parser"
 class Interpreter
   def initialize
     @scope = Scope.new
+    @logger = Logger.new
   end
 
   def interpret(source, repl)
     parser = Parser.new(source)
     ast = parser.parse
+    puts ast
     ast.each do |node|
       result = evaluate(node)
       puts result == nil ? "none" : result unless !repl
@@ -74,9 +76,9 @@ class Interpreter
 
     when Statement::If
 
-    when Statement::While
+    # when Statement::While
 
-    when Statement::For
+    # when Statement::For
 
     when Statement::ExpressionStmt
 
@@ -86,7 +88,7 @@ class Interpreter
       @scope = Scope.new(@scope)
       node.statements.each { |stmt| evaluate(stmt) }
     else
-      logger.report_error("Unhandled AST node: #{node}")
+      @logger.report_error("Unhandled AST node", node, 0, 0)
     end
   end
 end
