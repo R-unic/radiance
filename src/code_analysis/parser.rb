@@ -141,6 +141,9 @@ class Parser
         advance
         left = Expression::BinaryOp.new(left, token, parse_primary_expression)
       when Syntax::Equal
+        unless left.is_a?(Expression::VariableReference)
+          @logger.report_error("Syntax error", "Invalid assignment", token.position, token.line)
+        end
         advance
         left = Expression::VariableAssignment.new(left, parse_primary_expression)
       when Syntax::LeftParen

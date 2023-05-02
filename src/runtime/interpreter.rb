@@ -24,15 +24,21 @@ class Interpreter
     when Expression::UnaryOp
 
     when Expression::Literal
-      node.token.value
-    when Expression::VariableReference
-      @scope.lookup_variable(node.identifier)
-      puts @scope
-    when Expression::VariableAssignment
-      value = evaluate(node.expression)
-      @scope.add_variable(node.identifier, value)
+      case node.token.syntax_type
+      when Syntax::Float
+        node.token.value.value.to_f
+      when Syntax::Boolean
+        node.token.value.value.to_bool
+      else
+        node.token.value.value.to_s
+      end
     when Expression::FunctionCall
 
+    when Expression::VariableAssignment
+      value = evaluate(node.expression)
+      @scope.add_variable(node.reference.identifier.value.value, value)
+    when Expression::VariableReference
+      @scope.lookup_variable(node.identifier.value.value)
     when Statement::Function
 
     when Statement::If

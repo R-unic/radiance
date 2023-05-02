@@ -18,6 +18,7 @@ class Scope
   end
 
   def to_s
-    "Scope<#{@parent ? "parent: " + @parent.to_s + ", " : ""}#{@local_variables}>"
+    variables = @local_variables.transform_keys { |key| key.value }
+    "Scope<#{@parent ? "parent: " + @parent.to_s + ", " : ""}#{variables}>"
   end
 end

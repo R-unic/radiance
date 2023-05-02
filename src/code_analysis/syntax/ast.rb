@@ -58,11 +58,12 @@ module Expression
     end
   end
 
-  class VariableAssignment < VariableReference
-    attr_reader :identifier, :expression
+  class VariableAssignment < Expr
+    attr_reader :reference, :expression
 
-    def initialize(identifier, expression)
-      super(identifier)
+    def initialize(reference, expression)
+      super()
+      @reference = reference
       @expression = expression
     end
 
