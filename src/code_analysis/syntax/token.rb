@@ -39,6 +39,6 @@ class Token
   def to_s(indent = 0)
     prefix = "\t" * indent
     value_str = @value.nil? ? "none" : PossibleTokenValue.new(@syntax_type, @value).to_s
-    "#{prefix}Token<syntax: #{@syntax_type}, value: #{value_str.start_with?("Ident<") ? value_str : value_str[1..-2]}>"
+    "#{prefix}Token<syntax: #{@syntax_type}, value: #{(@syntax_type == Syntax::String || @syntax_type == Syntax::Char) ? value_str[1..-2] : value_str}>"
   end
 end

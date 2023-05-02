@@ -54,7 +54,7 @@ module Expression
     end
 
     def to_s
-      "VariableReference<syntax: #{@token.syntax_type}, value: #{@token.value}>"
+      "VariableReference<identifier: #{@identifier}>"
     end
   end
 

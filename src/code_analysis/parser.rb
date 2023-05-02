@@ -21,7 +21,7 @@ class Parser
       Syntax::String,
       Syntax::Boolean,
       Syntax::None,
-      Syntax::Identevaluateier,
+      Syntax::Identifier,
       Syntax::LeftParen
         nodes << parse_expression
       when
@@ -137,12 +137,10 @@ class Parser
       Syntax::Ampersand,
       Syntax::Pipe,
       Syntax::Question,
-      Syntax::HyphenArrow,
-        advance
+      Syntax::HyphenArrow
         advance
         left = Expression::BinaryOp.new(left, token, parse_primary_expression)
       when Syntax::Equal
-        advance
         advance
         left = Expression::VariableAssignment.new(left, parse_primary_expression)
       when Syntax::LeftParen

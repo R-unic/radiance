@@ -8,6 +8,7 @@ class Interpreter
     parser = Parser.new(source)
     @source = source
     @ast = parser.parse
+    puts @ast
     @scope = Scope.new
   end
 
@@ -20,14 +21,19 @@ class Interpreter
 
   def evaluate(node)
     case node
-    when Expression::FunctionCall
-
     when Expression::BinaryOp
 
     when Expression::UnaryOp
 
     when Expression::Literal
       node.token.value
+    when Expression::VariableReference
+      @scope.lookup_variable(node.identifier)
+    when Expression::VariableAssignment
+      value = evaluate(node.expression)
+      @scope.add_variable(node.identifier, value)
+    when Expression::FunctionCall
+
     when Statement::Function
 
     when Statement::If
