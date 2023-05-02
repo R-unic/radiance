@@ -35,9 +35,9 @@ class Interpreter
     when Expression::Literal
       case node.token.syntax_type
       when Syntax::Float
-        node.token.value.value.to_f
+        node.token.value.value
       when Syntax::Boolean
-        node.token.value.value.to_bool
+        node.token.value.value
       else
         node.token.value.value.to_s
       end
