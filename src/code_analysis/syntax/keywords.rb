@@ -12,7 +12,6 @@ module Keywords
     "if" => Syntax::If,
     "else" => Syntax::Else,
     "for" => Syntax::For,
-    "foreach" => Syntax::ForEach,
     "while" => Syntax::While,
     "break" => Syntax::Break,
     "next" => Syntax::Next,

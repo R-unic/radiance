@@ -21,7 +21,7 @@ class Parser
       Syntax::String,
       Syntax::Boolean,
       Syntax::None,
-      Syntax::Identifier,
+      Syntax::Identevaluateier,
       Syntax::LeftParen
         nodes << parse_expression
       when
@@ -93,11 +93,7 @@ class Parser
     block = parse_block
     if @tokens[@position].syntax_type == Syntax::Else
       branch = advance
-      if branch.syntax_type == Syntax::If
-        else_branch = parse_if_stmt
-      else
-        else_branch = parse_block
-      end
+      else_branch = branch.syntax_type == Syntax::If ? parse_if_stmt : parse_block
     else
       else_branch = nil
     end
@@ -225,11 +221,7 @@ class Parser
 
   def consume(syntax, error_msg)
     token = @tokens[@position]
-    if token.syntax_type == syntax
-      advance
-    else
-      logger.report_error(error_msg, token.syntax_type, token.position, token.line)
-    end
+    logger.report_error(error_msg, token.syntax_type, token.position, token.line) unless token.syntax_type == syntax rescue advance
     token
   end
 

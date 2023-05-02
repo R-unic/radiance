@@ -8,9 +8,9 @@ end
 
 class CLI
   class << self
-    def read_source(source)
+    def read_source(source, repl = false)
       interpreter = Interpreter.new(source)
-      interpreter.interpret
+      interpreter.interpret(repl)
     end
 
     def read_file(path)
@@ -25,7 +25,7 @@ class CLI
       loop do
         line = Readline.readline("➤ ", true)
         break if line.nil?
-        puts read_source(line)
+        read_source(line, true)
       end
     end
 

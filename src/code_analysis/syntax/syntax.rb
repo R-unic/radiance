@@ -50,7 +50,6 @@ module Syntax
   If = :If
   Else = :Else
   For = :For
-  ForEach = :ForEach
   While = :While
   Global = :Global
   Constant = :Constant
