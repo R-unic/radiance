@@ -177,19 +177,15 @@ class Parser
 
   def parse_call_args
     consume(Syntax::LeftParen, "Expected '(' after function name, got")
-    first = @tokens[@position]
+    first_time = true
     arg_expressions = []
-    if !first.nil? && first.syntax_type != Syntax::RightParen
-      arg_expressions << first
-      current = advance
-      while !current.nil? && current.syntax_type != Syntax::RightParen
-        if current.syntax_type != Syntax::Comma
-          expr = parse_expression
-          arg_expressions << expr if expr
-        end
-        current = advance
-      end
+    while !@tokens[@position].nil? && @tokens[@position].syntax_type != Syntax::RightParen
+      consume(Syntax::Comma, "Expected ',' to separate arguments, got") unless first_time
+      arg_expressions << parse_primary_expression
+      first_time = false
     end
+    puts arg_expressions
+    consume(Syntax::RightParen, "Expected ')' after argument list, got")
     arg_expressions
   end
 
@@ -244,8 +240,8 @@ class Parser
     @tokens[@position].nil?
   end
 
-  def peek
-    @tokens[@position + 1]
+  def peek(offset = 1)
+    @tokens[@position + offset]
   end
 
   def advance
